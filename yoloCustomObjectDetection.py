@@ -20,7 +20,7 @@ class MugDetection:
         """
         # Start of init mediawriter
         fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-        self.media_Writer = cv2.VideoWriter("./test.avi",fourcc,50,(640,480),True)
+        self.media_Writer = cv2.VideoWriter("./test.avi",fourcc,30,(640,480),True)
         # end of init mediawriter
         self.capture_index = capture_index
         self.model = self.load_model(model_name)
@@ -87,40 +87,41 @@ class MugDetection:
 
         return frame
 
-    def __call__(self):
+    def __call__(self,cap):
         """
         This function is called when class is executed, it runs the loop to read the video frame by frame,
         and write the output into a new file.
         :return: void
         """
-        cap = self.get_video_capture()
-        assert cap.isOpened()
+        # cap = self.get_video_capture()
+        # assert cap.isOpened()
       
-        while True:
+        # while True:
           
-            ret, frame = cap.read()
+        ret, frame = cap.read()
+        assert ret
             
-            assert ret
+        frame = cv2.resize(frame, (640,480))
             
-            frame = cv2.resize(frame, (640,480))
+        start_time = time()
+        results = self.score_frame(frame)
+        frame = self.plot_boxes(results, frame)
             
-            start_time = time()
-            results = self.score_frame(frame)
-            frame = self.plot_boxes(results, frame)
-            
-            end_time = time()
-            fps = 1/np.round(end_time - start_time, 2)
-            #print(f"Frames Per Second : {fps}")
-            
-            cv2.putText(frame, f'FPS: {int(fps)}', (20,70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
-            self.mp4Writer(frame)
-            cv2.imshow('YOLOv5 Detection', frame)
+        end_time = time()
+        fps = 1/np.round(end_time - start_time, 2)
+        #print(f"Frames Per Second : {fps}")
+        
+        cv2.putText(frame, f'FPS: {int(fps)}', (20,70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
+        self.mp4Writer(frame)
+        return frame
+        
+        # cv2.imshow('YOLOv5 Detection', frame)
  
-            if cv2.waitKey(5) & 0xFF == 27:
-                self.media_Writer.release()
-                break
+        # if cv2.waitKey(5) & 0xFF == 27:
+        #     self.media_Writer.release()
+        #     break
       
-        cap.release()
+        
     
     def mp4Writer(self,image):
         self.media_Writer.write(image)
@@ -130,5 +131,5 @@ class MugDetection:
 
         
 # Create a new object and execute.
-detector = MugDetection(capture_index=0, model_name='yolov5m.pt')
-detector()
+# detector = MugDetection(capture_index=0, model_name='yolov5m.pt')
+# detector()
