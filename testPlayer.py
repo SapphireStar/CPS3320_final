@@ -24,13 +24,23 @@ class Ui_Form(QWidget):
         self.detector = yolo.MugDetection(capture_index=0, model_name='yolov5m.pt')
 
         self.button_open_camera = QtWidgets.QPushButton(u'打开相机')
+
+
         # 信息显示,label_show_camera为显示经过处理后的摄像头抓取画面
         self.label_show_camera = QtWidgets.QLabel(Form)
 
         self.label_show_camera.setGeometry(QtCore.QRect(0, 0, 640, 480))
         self.label_show_camera.setAutoFillBackground(False)
 
+        #设置result label外形
+        font = QtGui.QFont()
+        font.setFamily("Adobe Arabic")
+        font.setPointSize(26)
         self.label_show_result = QtWidgets.QLabel(Form)
+        self.label_show_result.setGeometry(QtCore.QRect(100,500,320,70))
+        self.label_show_result.setText("You are wearing mask")
+        self.label_show_result.setFont(font)
+
 
 
     def retranslateUi(self, Form):
