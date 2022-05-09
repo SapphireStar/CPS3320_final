@@ -87,7 +87,7 @@ class MugDetection:
 
         return frame
 
-    def __call__(self,cap):
+    def __call__(self,cap,showbox,showfps):
         """
         This function is called when class is executed, it runs the loop to read the video frame by frame,
         and write the output into a new file.
@@ -105,13 +105,15 @@ class MugDetection:
             
         start_time = time()
         results = self.score_frame(frame)
-        frame = self.plot_boxes(results, frame)
+
+        if showbox:
+            frame = self.plot_boxes(results, frame)
             
         end_time = time()
-        fps = 1/np.round(end_time - start_time, 2)
-        #print(f"Frames Per Second : {fps}")
+        fps = 1/(end_time - start_time)
         
-        cv2.putText(frame, f'FPS: {int(fps)}', (20,70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,0), 2)
+        if showfps:
+            cv2.putText(frame, f'FPS: {int(fps)}', (20,70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
         self.mp4Writer(frame)
         return frame
         
