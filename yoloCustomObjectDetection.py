@@ -101,7 +101,7 @@ class MugDetection:
         ret, frame = cap.read()
         assert ret
             
-        frame = cv2.resize(frame, (640,480))
+        frame = cv2.resize(frame, (400,300))
             
         start_time = time()
         results = self.score_frame(frame)

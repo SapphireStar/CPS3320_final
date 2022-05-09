@@ -23,6 +23,7 @@ class Ui_Form(QWidget):
         self.playerTimer.timeout.connect(self.getImage)
         self.detector = yolo.MugDetection(capture_index=0, model_name='yolov5m.pt')
 
+
         self.button_open_camera = QtWidgets.QPushButton(u'打开相机')
 
 
