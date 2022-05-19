@@ -8,20 +8,13 @@ from PIL import Image as im
 
 
 class MugDetection:
-    """
-    Class implements Yolo5 model to make inferences on a youtube video using Opencv2.
-    """
 
     def __init__(self, capture_index, model_name):
-        """
-        Initializes the class with youtube url and output file.
-        :param url: Has to be as youtube URL,on which prediction is made.
-        :param out_file: A valid output file name.
-        """
         # Start of init mediawriter
         fourcc = cv2.VideoWriter_fourcc(*'MJPG')
         self.media_Writer = cv2.VideoWriter("./test.avi",fourcc,30,(640,480),True)
         # end of init mediawriter
+        
         self.capture_index = capture_index
         self.model = self.load_model(model_name)
         self.classes = self.model.names
@@ -29,18 +22,10 @@ class MugDetection:
         print("Using Device: ", self.device)
 
     def get_video_capture(self):
-        """
-        Creates a new video streaming object to extract video frame by frame to make prediction on.
-        :return: opencv2 video capture object, with lowest quality frame available for video.
-        """
       
         return cv2.VideoCapture(self.capture_index)
 
     def load_model(self, model_name):
-        """
-        Loads Yolo5 model from pytorch hub.
-        :return: Trained Pytorch model.
-        """
         if model_name:
             model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_name, force_reload=False)
         else:
@@ -48,11 +33,6 @@ class MugDetection:
         return model
 
     def score_frame(self, frame):
-        """
-        Takes a single frame as input, and scores the frame using yolo5 model.
-        :param frame: input frame in numpy/list/tuple format.
-        :return: Labels and Coordinates of objects detected by model in the frame.
-        """
         self.model.to(self.device)
         frame = [frame]
         results = self.model(frame)
@@ -60,20 +40,10 @@ class MugDetection:
         return labels, cord
 
     def class_to_label(self, x):
-        """
-        For a given label value, return corresponding string label.
-        :param x: numeric label
-        :return: corresponding string label
-        """
+        
         return self.classes[int(x)]
 
     def plot_boxes(self, results, frame):
-        """
-        Takes a frame and its results as input, and plots the bounding boxes and label on to the frame.
-        :param results: contains labels and coordinates predicted by model on the given frame.
-        :param frame: Frame which has been scored.
-        :return: Frame with bounding boxes and labels ploted on it.
-        """
         labels, cord = results
         n = len(labels)
         x_shape, y_shape = frame.shape[1], frame.shape[0]
@@ -84,15 +54,11 @@ class MugDetection:
                 bgr = (0, 255, 0)
                 cv2.rectangle(frame, (x1, y1), (x2, y2), bgr, 2)
                 cv2.putText(frame, self.class_to_label(labels[i]), (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.9, bgr, 2)
+                
 
         return frame
 
     def __call__(self,cap,showbox,showfps):
-        """
-        This function is called when class is executed, it runs the loop to read the video frame by frame,
-        and write the output into a new file.
-        :return: void
-        """
         # cap = self.get_video_capture()
         # assert cap.isOpened()
       
@@ -105,6 +71,11 @@ class MugDetection:
             
         start_time = time()
         results = self.score_frame(frame)
+        labels,cord = results
+        try:
+            label = self.class_to_label(labels[0])
+        except:
+            label = "not detecting anything"
 
         if showbox:
             frame = self.plot_boxes(results, frame)
@@ -115,7 +86,9 @@ class MugDetection:
         if showfps:
             cv2.putText(frame, f'FPS: {int(fps)}', (20,70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
         self.mp4Writer(frame)
-        return frame
+
+        
+        return frame,label
         
         # cv2.imshow('YOLOv5 Detection', frame)
  
@@ -126,6 +99,7 @@ class MugDetection:
         
     
     def mp4Writer(self,image):
+        print("write")
         self.media_Writer.write(image)
         
 

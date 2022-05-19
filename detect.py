@@ -23,35 +23,49 @@ class Ui_MainWindow(object):
 
         #logical parameter definition
         self.cap = cv2.VideoCapture(0)
+
+        self.checkMaskTimer = QTimer()
+        self.checkMaskTimer.timeout.connect(self.checkMask)
         self.playerTimer = QTimer()
         self.playerTimer.timeout.connect(self.getImage)
-        self.detector = yolo.MugDetection(capture_index=0, model_name='yolov5m.pt')
+        self.detector = yolo.MugDetection(capture_index=0, model_name='best.pt')
+
         self.plotFPS = False
         self.plotBox = False
+        self.currentLabel = ""
 
 
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(648, 544)
+        MainWindow.resize(648, 600)
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(16)
+        
         MainWindow.setFont(font)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
+        self.detect_result_label = QtWidgets.QLabel(self.centralwidget)
+        self.detect_result_label.setGeometry(QtCore.QRect(220,320,191,50))
+        self.detect_result_label.setFont(font)
+        self.detect_result_label.setAlignment(Qt.AlignCenter)
+        self.detect_result_label.setText("")
+        self.detect_result_label.setObjectName("detect_result_label")
+
         self.video_output = QtWidgets.QLabel(self.centralwidget)
         self.video_output.setGeometry(QtCore.QRect(120, 0, 400, 300))
         self.video_output.setStyleSheet("")
         self.video_output.setText("")
         self.video_output.setObjectName("video_output")
         self.checkBox = QtWidgets.QCheckBox(self.centralwidget)
-        self.checkBox.setGeometry(QtCore.QRect(220, 380, 131, 41))
+        self.checkBox.setGeometry(QtCore.QRect(220, 460, 131, 41))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(16)
         self.checkBox.setFont(font)
         self.checkBox.setObjectName("checkBox")
         self.start_detect = QtWidgets.QPushButton(self.centralwidget)
-        self.start_detect.setGeometry(QtCore.QRect(220, 310, 191, 71))
+        self.start_detect.setGeometry(QtCore.QRect(220, 390, 191, 71))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(22)
@@ -63,10 +77,10 @@ class Ui_MainWindow(object):
         font.setPointSize(16)
         self.checkBox_2 = QtWidgets.QCheckBox(self.centralwidget)
         self.checkBox_2.setFont(font)
-        self.checkBox_2.setGeometry(QtCore.QRect(220, 420, 111, 31))
+        self.checkBox_2.setGeometry(QtCore.QRect(220, 500, 111, 31))
         self.checkBox_2.setObjectName("checkBox_2")
         self.stop_detect_button = QtWidgets.QPushButton(self.centralwidget)
-        self.stop_detect_button.setGeometry(QtCore.QRect(250,470,120,30))
+        self.stop_detect_button.setGeometry(QtCore.QRect(250,540,120,30))
         self.stop_detect_button.setObjectName("stop_detect_button")
         self.stop_detect_button.setFont(font)
         
@@ -99,9 +113,11 @@ class Ui_MainWindow(object):
 
     def startDetect(self):
         self.playerTimer.start(0)
+        self.checkMaskTimer.start(500)
 
     def stopDetect(self):
         self.playerTimer.stop()
+        self.checkMaskTimer.stop()
 
     def ifPlotBox(self):
         if self.checkBox.checkState()==2:
@@ -115,11 +131,12 @@ class Ui_MainWindow(object):
         else:
             self.plotFPS=False
 
-
+    def checkMask(self):
+        self.detect_result_label.setText(self.currentLabel)
 
     def getImage(self):
         assert self.cap.isOpened()
-        frame = self.detector(self.cap,self.plotBox,self.plotFPS)
+        frame,self.currentLabel = self.detector(self.cap,self.plotBox,self.plotFPS)
         show = cv2.resize(frame,(400,300))
         show = cv2.cvtColor(show, cv2.COLOR_BGR2RGB)
         showImage = QtGui.QImage(show.data, show.shape[1], show.shape[0], QtGui.QImage.Format_RGB888)
@@ -135,6 +152,12 @@ if __name__ == "__main__":
         QWidget{
             background:#262d37;
             color:white;
+        }
+        #detect_result_label{
+            text-align:center;
+            font-size:20px;
+            border:3px solid white;
+            border-radius:5px;
         }
         #start_detect{
             background:#0577a8;
