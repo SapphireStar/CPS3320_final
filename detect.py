@@ -186,6 +186,5 @@ if __name__ == "__main__":
 
     app.setStyleSheet(styleSheet)
     ui.setupUi(MainWindow)
-    #ui.playerTimer.start(0)
     MainWindow.show()
     sys.exit(app.exec())

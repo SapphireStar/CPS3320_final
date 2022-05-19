@@ -59,10 +59,6 @@ class MugDetection:
         return frame
 
     def __call__(self,cap,showbox,showfps):
-        # cap = self.get_video_capture()
-        # assert cap.isOpened()
-      
-        # while True:
           
         ret, frame = cap.read()
         assert ret
@@ -85,27 +81,15 @@ class MugDetection:
         
         if showfps:
             cv2.putText(frame, f'FPS: {int(fps)}', (20,70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+
         self.mp4Writer(frame)
 
         
         return frame,label
-        
-        # cv2.imshow('YOLOv5 Detection', frame)
- 
-        # if cv2.waitKey(5) & 0xFF == 27:
-        #     self.media_Writer.release()
-        #     break
       
         
     
     def mp4Writer(self,image):
-        print("write")
         self.media_Writer.write(image)
-        
 
 
-
-        
-# Create a new object and execute.
-# detector = MugDetection(capture_index=0, model_name='yolov5m.pt')
-# detector()
