@@ -12,9 +12,8 @@ class MugDetection:
     def __init__(self, capture_index, model_name):
         # Start of init mediawriter
         fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-        self.media_Writer = cv2.VideoWriter("./test.avi",fourcc,30,(640,480),True)
+        self.media_Writer = cv2.VideoWriter("./test.avi",fourcc,30,(400,300),True)
         # end of init mediawriter
-        
         self.capture_index = capture_index
         self.model = self.load_model(model_name)
         self.classes = self.model.names
@@ -81,14 +80,11 @@ class MugDetection:
         
         if showfps:
             cv2.putText(frame, f'FPS: {int(fps)}', (20,70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
-
         self.mp4Writer(frame)
-
         
         return frame,label
       
         
-    
     def mp4Writer(self,image):
         self.media_Writer.write(image)
 

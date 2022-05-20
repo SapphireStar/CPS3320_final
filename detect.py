@@ -20,7 +20,6 @@ import yoloCustomObjectDetection as yolo
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-
         #logical parameter definition
         self.cap = cv2.VideoCapture(0)
 
@@ -137,10 +136,12 @@ class Ui_MainWindow(object):
     def getImage(self):
         assert self.cap.isOpened()
         frame,self.currentLabel = self.detector(self.cap,self.plotBox,self.plotFPS)
+        
         show = cv2.resize(frame,(400,300))
         show = cv2.cvtColor(show, cv2.COLOR_BGR2RGB)
         showImage = QtGui.QImage(show.data, show.shape[1], show.shape[0], QtGui.QImage.Format_RGB888)
         self.video_output.setPixmap(QtGui.QPixmap.fromImage(showImage))
+    
 
 
 if __name__ == "__main__":
