@@ -42,6 +42,12 @@ class MugDetection:
         
         return self.classes[int(x)]
 
+    def get_confidence(self,str):
+        str = str.split(',')[0]
+        str = str.replace('tensor(','')
+        str = str.replace(')','')
+        return str
+
     def plot_boxes(self, results, frame):
         labels, cord = results
         n = len(labels)
@@ -52,7 +58,7 @@ class MugDetection:
                 x1, y1, x2, y2 = int(row[0]*x_shape), int(row[1]*y_shape), int(row[2]*x_shape), int(row[3]*y_shape)
                 bgr = (0, 255, 0)
                 cv2.rectangle(frame, (x1, y1), (x2, y2), bgr, 2)
-                cv2.putText(frame, self.class_to_label(labels[i]), (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.9, bgr, 2)
+                cv2.putText(frame, self.class_to_label(labels[i]) + self.get_confidence(str(row[4])), (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.9, bgr, 2)
                 
 
         return frame
@@ -68,7 +74,10 @@ class MugDetection:
         results = self.score_frame(frame)
         labels,cord = results
         try:
-            label = self.class_to_label(labels[0])
+            if int(labels[0])==0:
+                label = "Wearing Mask"
+            else:
+                label = "Not Wearing Mask"
         except:
             label = "not detecting anything"
 
