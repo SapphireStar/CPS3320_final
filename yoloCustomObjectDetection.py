@@ -1,18 +1,13 @@
-from tkinter.tix import Tree
 import torch
-import numpy as np
 import cv2
 from time import time
-import os
-from PIL import Image as im
-
 
 class MugDetection:
 
     def __init__(self, capture_index, model_name):
         # Start of init mediawriter
         fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-        self.media_Writer = cv2.VideoWriter("./test.avi",fourcc,30,(400,300),True)
+        self.media_Writer = cv2.VideoWriter("./record.avi",fourcc,30,(400,300),True)
         # end of init mediawriter
         self.capture_index = capture_index
         self.model = self.load_model(model_name)
