@@ -2,13 +2,15 @@ import torch
 import cv2
 from time import time
 
-class MugDetection:
+class Detection:
 
     def __init__(self, capture_index, model_name):
         # Start of init mediawriter
         fourcc = cv2.VideoWriter_fourcc(*'MJPG')
         self.media_Writer = cv2.VideoWriter("./record.avi",fourcc,30,(400,300),True)
         # end of init mediawriter
+
+        #Some initializations
         self.capture_index = capture_index
         self.model = self.load_model(model_name)
         self.classes = self.model.names
@@ -26,6 +28,7 @@ class MugDetection:
             model = torch.hub.load('./', 'yolov5s', pretrained=True)
         return model
 
+    #Get the idea of this function from a tutorial on Youtube
     def score_frame(self, frame):
         self.model.to(self.device)
         frame = [frame]
@@ -43,6 +46,7 @@ class MugDetection:
         str = str.replace(')','')
         return str
 
+    #Get the idea of this function from a tutorial on Youtube
     def plot_boxes(self, results, frame):
         labels, cord = results
         n = len(labels)
@@ -58,6 +62,7 @@ class MugDetection:
 
         return frame
 
+    #Read the image captured at present, add some information to the frame, then return the frame
     def __call__(self,cap,showbox,showfps):
           
         ret, frame = cap.read()

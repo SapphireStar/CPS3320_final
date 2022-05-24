@@ -28,3 +28,13 @@ This project is about object detection, so that it will be better to use a compu
 - Click the "Stop Detect" button to stop detecting
 - After terminate the program, it will record a video for the last detection
 
+
+
+## Website used in code
+
+- Youtube - https://www.youtube.com/watch?v=rZyY2pNzypQ
+
+
+
+## Github address
+

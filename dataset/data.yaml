@@ -1,0 +1,5 @@
+train: ./data/datasets/maskwearingbig/train/images
+val: ./data/datasets/maskwearingbig/valid/images
+
+nc: 2
+names: ['Wearing_Mask', 'Not_Wearing_Mask']
