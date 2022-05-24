@@ -38,3 +38,4 @@ This project is about object detection, so that it will be better to use a compu
 
 ## Github address
 
+[SapphireStar/CPS3320_final (github.com)](https://github.com/SapphireStar/CPS3320_final)
